@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'app/data/repositories_impl/notifications_repository_impl.dart';
+import 'app/domain/repositories/notifications_repository.dart';
 import 'app/presentation/modules/home/views/home_view.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    Provider(
+      notificationsRepository: NotificationsRepositoryImpl(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -17,5 +24,24 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomeView(),
     );
+  }
+}
+
+class Provider extends InheritedWidget {
+  final NotificationsRepository notificationsRepository;
+
+  const Provider({
+    super.key,
+    required super.child,
+    required this.notificationsRepository,
+  });
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+    return false;
+  }
+
+  static Provider of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<Provider>()!;
   }
 }

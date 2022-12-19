@@ -1,19 +1,49 @@
-
-
 import 'package:flutter/material.dart';
 
-class HomeView extends StatefulWidget {
+import '../../../../../main.dart';
+import '../../../../domain/models/notification.dart';
+
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const Scaffold(),
+              ),
+            ),
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            StreamBuilder<AppNotification>(
+              stream:
+                  Provider.of(context).notificationsRepository.onNotification,
+              builder: (_, snapshot) {
+                if (snapshot.data != null) {
+                  return ListTile(
+                    title: Text(snapshot.data!.title),
+                  );
+                }
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
